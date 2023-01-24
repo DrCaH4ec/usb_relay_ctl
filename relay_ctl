@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+import serial
+import time
+import argparse
+
+BAUDRATE = 9600
+TIMEOUT = 10
+FIRST_RELAY = 1
+LAST_RELAY = 16
+CMD_END_CHAR = ";"
+SUPPORTED_RELAYS = range(FIRST_RELAY, LAST_RELAY)
+
+def set_state(ser, rel, state):
+    cmd = str(rel) + " " + str(state) + CMD_END_CHAR
+    ser.write(cmd.encode())
+    print("INF: Relay["+str(rel)+"] is set to "+str(state))
+
+def delay_sec(delay):
+    if delay == 0: return
+    print("Wait "+str(delay)+" sec")
+    time.sleep(delay)
+
+
+def main(argv):
+    
+    try:
+        ser = serial.Serial(argv.p, BAUDRATE, timeout=TIMEOUT)
+    except:
+        print("ERROR: Cannot open port: " + str(argv.p))
+        return
+    
+    delay = 0
+        
+    relay_num = int(argv.n)
+    if not(relay_num in SUPPORTED_RELAYS):
+        print("ERR: Wrong relay number. Must be in range ["+str(FIRST_RELAY)+", "+str(LAST_RELAY)+"]")
+        return
+    
+    if argv.d != None:
+        delay = int(argv.d)
+        if delay < 0:
+            print("ERR: Wrong pre_delay. Must be grater than 0.")
+            return
+    
+    if argv.s != None:
+        delay_sec(delay)
+        set_state(ser, relay_num, int(argv.s))
+    elif argv.r != None:
+        delay_sec(delay)
+        set_state(ser, relay_num, '0')
+        delay_sec(int(argv.r))
+        set_state(ser, relay_num, '1')
+    else:
+        print("ERR: At least one arg '-s' or '-r' must be specified")
+        
+        
+    ser.close()
+
+
+if __name__ == "__main__":
+    
+    parser = argparse.ArgumentParser(description = "This app helps to control \
+                                                    some amount of relays via USB.",
+                                                    epilog = "Please, enjoy:)")
+    
+    parser.add_argument('-p', required = True, metavar = "<port>",
+                        help = "Specify connection port.")
+    parser.add_argument('-n', required = True, metavar = "<relay_num>",
+                        help = "Relay number you want to switch.")
+    parser.add_argument('-s', required = False, metavar = "<state>",
+                        choices = ['1', '0'], help = "Specify state to set the \
+                            relay. 0 is for 'off' and 1 is for 'on'.")
+    parser.add_argument('-r', required = False, metavar = "<wait_sec>",
+                        help = "Reswitch relay with <wait_sec> delay \
+                        between changing states. If relay is in 'off' state, it \
+                        will be changed to 'on' as the result.")
+    parser.add_argument('-d', required = False, metavar = "<wait_ms>",
+                        help = "Delay <wait_sec> before execution.")
+
+    args = parser.parse_args()
+    
+    main(args)
