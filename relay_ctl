@@ -3,7 +3,7 @@ import serial
 import time
 import argparse
 
-BAUDRATE = 9600
+BAUDRATE = 300
 TIMEOUT = 10
 FIRST_RELAY = 1
 LAST_RELAY = 16
