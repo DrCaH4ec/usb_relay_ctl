@@ -26,7 +26,7 @@
 // Enabling/disabling of double speed mode
 // 1 -> double speed mode is enable
 // 0 -> double speed mode is disable
-#define USART0_SPEED_MODE	1
+#define USART0_SPEED_MODE	0
 
 // Setting number of bits in one "piece" of data
 // valid values is 5, 6, 7, 8(default)
@@ -38,7 +38,7 @@
 #define USART0_STOP_BIT 2
 
 // Speed of USART0 in bod
-#define USART0_BAUD_RATE 9600
+#define USART0_BAUD_RATE 300
 
 // Enabling/disabling of receiving data
 // 1 -> receiving data is enable
