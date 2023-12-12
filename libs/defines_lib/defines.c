@@ -1,37 +1,41 @@
 #include "defines.h"
 
-uint8_t *get_ddr(uint8_t relay_num)
+void pin_mode(char ddr, uint8_t pin, bool state)
 {
-    if (relay_num >= 0 && relay_num <= 5 )
-        return (uint8_t*)&DDRD;
-    else if (relay_num >= 6 && relay_num <= 11 )
-        return (uint8_t*)&DDRB;
-    else if (relay_num >= 12 && relay_num <= 15 )
-        return (uint8_t*)&DDRC;
-    else
-        return NULL;
+    switch (ddr) {
+        case 'B':
+            DDRB = state ? DDRB|(1<<pin) : DDRB&(~(1<<pin));
+            break;
+
+        case 'C':
+            DDRC = state ? DDRC|(1<<pin) : DDRC&(~(1<<pin));
+            break;
+        
+        case 'D':
+            DDRD = state ? DDRD|(1<<pin) : DDRD&(~(1<<pin));
+            break;
+        
+        default:
+            break;
+    }
 }
 
-uint8_t *get_port(uint8_t relay_num)
+void digital_write(char port, uint8_t pin, bool state)
 {
-    if (relay_num >= 0 && relay_num <= 5 )
-        return (uint8_t*)&PORTD;
-    else if (relay_num >= 6 && relay_num <= 11 )
-        return (uint8_t*)&PORTB;
-    else if (relay_num >= 12 && relay_num <= 15 )
-        return (uint8_t*)&PORTC;
-    else
-        return NULL;
-}
+    switch (port) {
+        case 'B':
+            PORTB = state ? PORTB|(1<<pin) : PORTB&(~(1<<pin));
+            break;
 
-uint8_t get_pin(uint8_t relay_num)
-{
-    if (relay_num >= 0 && relay_num <= 5 )
-        return relay_num + 2;
-    else if (relay_num >= 6 && relay_num <= 11 )
-        return relay_num - 6;
-    else if (relay_num >= 12 && relay_num <= 15 )
-        return relay_num - 12;
-    else
-        return -1;
+        case 'C':
+            PORTC = state ? PORTC|(1<<pin) : PORTC&(~(1<<pin));
+            break;
+        
+        case 'D':
+            PORTD = state ? PORTD|(1<<pin) : PORTD&(~(1<<pin));
+            break;
+        
+        default:
+            break;
+        }
 }

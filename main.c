@@ -1,20 +1,33 @@
 #include "defines.h"
 
+static const struct relay_t relay_list[RELAYS_AMOUNT] = {
+    {'D', 2}, // rel_1
+    {'D', 3}, // rel_2
+    {'D', 4}, // rel_3
+    {'D', 5}, // rel_4
+    {'D', 6}, // rel_5
+    {'D', 7}, // rel_6
+    {'B', 0}, // rel_7
+    {'B', 1}, // rel_8
+    {'B', 2}, // rel_9
+    {'B', 3}, // rel_10
+    {'B', 4}, // rel_11
+    {'B', 5}, // rel_12
+    {'C', 0}, // rel_13
+    {'C', 1}, // rel_14
+    {'C', 2}, // rel_15
+    {'C', 3}, // rel_16
+};
+
 int main(void)
 {
     USART0_init();
 
-    struct relay_t relay_list[RELAYS_AMOUNT];
-
     for (uint8_t i = 0; i < RELAYS_AMOUNT; i++) {
-        relay_list[i].ddr = get_ddr(i);
-        relay_list[i].port = get_port(i);
-        relay_list[i].pin = get_pin(i);
-
-        _delay_ms(10);
-
-        pin_mode(relay_list[i].ddr, relay_list[i].pin, OUTPUT);
+        pin_mode(relay_list[i].port, relay_list[i].pin, OUTPUT);
         digital_write(relay_list[i].port, relay_list[i].pin, !ACTIVE_STATE);
+
+        _delay_ms(1);
     }
 
     int relay;
